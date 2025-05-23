@@ -1,58 +1,52 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
-import type { Session, User } from "@supabase/supabase-js";
+import type { User, AuthError } from "@supabase/supabase-js";
 
 interface AuthContextType {
   user: User | null;
-  session: Session | null;
   loading: boolean;
   signIn: (
     email: string,
     password: string
-  ) => Promise<{
-    error: Error | null;
-    success: boolean;
-  }>;
+  ) => Promise<{ error: AuthError | Error | null }>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Sprawdzenie aktualnej sesji
-    const getSession = async () => {
-      setLoading(true);
-
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("Błąd pobierania sesji:", error.message);
+    // Sprawdź aktualną sesję
+    const checkUser = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        if (error) throw error;
+        setUser(session?.user ?? null);
+      } catch (error) {
+        console.error("Error checking auth state:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
     };
 
-    getSession();
+    checkUser();
 
-    // Nasłuchiwanie zmian w sesji
+    // Nasłuchuj zmian w autoryzacji
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
     });
 
     return () => {
@@ -62,41 +56,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          error: new Error(data.error || "Błąd logowania"),
-          success: false,
-        };
+      if (error) {
+        return { error };
       }
 
-      return { error: null, success: true };
+      if (data?.session) {
+        router.push("/dashboard");
+        return { error: null };
+      }
+
+      return { error: new Error("Nie udało się zalogować") };
     } catch (error) {
       return {
         error: error instanceof Error ? error : new Error("Nieznany błąd"),
-        success: false,
       };
     }
   };
 
   const signOut = async () => {
-    await fetch("/api/auth", { method: "DELETE" });
-    setUser(null);
-    setSession(null);
+    try {
+      await supabase.auth.signOut();
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   const value = {
     user,
-    session,
     loading,
     signIn,
     signOut,

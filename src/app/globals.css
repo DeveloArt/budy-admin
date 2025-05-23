@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f9fa;
+  --foreground: #212529;
+  --primary: #495057;
+  --primary-foreground: #ffffff;
+  --secondary: #e9ecef;
+  --secondary-foreground: #343a40;
+  --accent: #6c757d;
+  --accent-foreground: #ffffff;
+  --muted: #f1f3f5;
+  --muted-foreground: #495057;
+  --card: #ffffff;
+  --card-foreground: #212529;
+  --border: #dee2e6;
+  --input: #e9ecef;
+  --ring: #adb5bd;
+  --radius: 0.5rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #212529;
+    --foreground: #f8f9fa;
+    --primary: #adb5bd;
+    --primary-foreground: #212529;
+    --secondary: #343a40;
+    --secondary-foreground: #f1f3f5;
+    --accent: #868e96;
+    --accent-foreground: #f8f9fa;
+    --muted: #343a40;
+    --muted-foreground: #ced4da;
+    --card: #212529;
+    --card-foreground: #f8f9fa;
+    --border: #495057;
+    --input: #343a40;
+    --ring: #868e96;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  border-color: var(--border);
+}
+
+/* Podstawowe style dla przycisków */
+button,
+.button {
+  border-radius: var(--radius);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Style dla inputów */
+input,
+textarea,
+select {
+  border-radius: var(--radius);
+  border: 1px solid var(--input);
+  background-color: var(--input);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.2);
+}
+
+/* Podstawowe animacje */
+.animate-fade {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.animate-scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.animate-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Dodatkowe style dla lepszej czytelności */
+.table-row-alternate:nth-child(even) {
+  background-color: var(--muted);
+}
+
+.hover-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Style dla nagłówków */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--foreground);
+  font-weight: 600;
+  line-height: 1.2;
 }

@@ -6,34 +6,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export function LoginForm() {
+export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
     try {
-      const { error } = await signIn(email, password);
+      const { error } = await signUp(email, password);
 
       if (error) {
         setError(error.message);
       }
     } catch (err) {
-      console.error("Nieoczekiwany błąd logowania:", err);
-      setError("Wystąpił błąd podczas logowania. Spróbuj ponownie.");
+      console.error("Nieoczekiwany błąd rejestracji:", err);
+      setError("Wystąpił błąd podczas rejestracji. Spróbuj ponownie.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-4">
+    <form onSubmit={handleRegister} className="space-y-4">
       <div className="space-y-2">
         <Input
           id="email-address"
@@ -49,7 +49,7 @@ export function LoginForm() {
           id="password"
           name="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -63,13 +63,8 @@ export function LoginForm() {
         </Alert>
       )}
 
-      <Button
-        type="submit"
-        variant="primary"
-        className="w-full"
-        disabled={loading}
-      >
-        {loading ? "Logowanie..." : "Zaloguj się"}
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Rejestracja..." : "Zarejestruj się"}
       </Button>
     </form>
   );

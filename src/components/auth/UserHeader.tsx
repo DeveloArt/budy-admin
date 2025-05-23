@@ -1,19 +1,16 @@
 "use client";
 
 import { useAuth } from "./AuthProvider";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function UserHeader() {
   const { user, signOut } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const router = useRouter();
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
       await signOut();
-      router.push("/login");
     } catch (error) {
       console.error("Błąd wylogowania:", error);
     } finally {
@@ -32,9 +29,6 @@ export function UserHeader() {
       </div>
       <div className="mt-2 text-center">
         <p className="font-medium">{user.email}</p>
-        <p className="text-xs text-gray-400">
-          {user.user_metadata?.role || "Użytkownik"}
-        </p>
       </div>
       <button
         onClick={handleLogout}
