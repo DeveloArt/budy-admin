@@ -12,6 +12,10 @@ interface AuthContextType {
     email: string,
     password: string
   ) => Promise<{ error: AuthError | Error | null }>;
+  signUp: (
+    email: string,
+    password: string
+  ) => Promise<{ error: AuthError | Error | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -23,7 +27,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Sprawdź aktualną sesję
     const checkUser = async () => {
       try {
         const {
@@ -42,7 +45,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     checkUser();
 
-    // Nasłuchuj zmian w autoryzacji
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -78,6 +80,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signUp = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        return { error };
+      }
+
+      if (data?.session) {
+        router.push("/dashboard");
+        return { error: null };
+      }
+
+      return {
+        error: new Error(
+          "Sprawdź swoją skrzynkę email, aby potwierdzić rejestrację"
+        ),
+      };
+    } catch (error) {
+      return {
+        error: error instanceof Error ? error : new Error("Nieznany błąd"),
+      };
+    }
+  };
+
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -91,6 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     loading,
     signIn,
+    signUp,
     signOut,
   };
 

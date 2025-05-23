@@ -1,8 +1,9 @@
 "use client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 interface DashboardStats {
   totalOrders: number;
@@ -11,13 +12,19 @@ interface DashboardStats {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({
     totalOrders: 0,
     pendingOrders: 0,
     totalRevenue: 0,
   });
-  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -38,13 +45,22 @@ export default function DashboardPage() {
         setStats({ totalOrders, pendingOrders, totalRevenue });
       } catch (error) {
         console.error("Error fetching stats:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchStats();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold">Ładowanie...</h1>
+          <p className="mt-2 text-gray-600">Proszę czekać...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthGuard>
@@ -64,36 +80,24 @@ export default function DashboardPage() {
           <div className="bg-card p-6 rounded-lg border border-border">
             <div className="text-4xl mb-2">📦</div>
             <h3 className="text-lg font-medium mb-1">Wszystkie zamówienia</h3>
-            {loading ? (
-              <div className="h-6 bg-muted animate-pulse rounded" />
-            ) : (
-              <p className="text-2xl font-bold">{stats.totalOrders}</p>
-            )}
+            <p className="text-2xl font-bold">{stats.totalOrders}</p>
           </div>
 
           <div className="bg-card p-6 rounded-lg border border-border">
             <div className="text-4xl mb-2">⏳</div>
             <h3 className="text-lg font-medium mb-1">Oczekujące</h3>
-            {loading ? (
-              <div className="h-6 bg-muted animate-pulse rounded" />
-            ) : (
-              <p className="text-2xl font-bold">{stats.pendingOrders}</p>
-            )}
+            <p className="text-2xl font-bold">{stats.pendingOrders}</p>
           </div>
 
           <div className="bg-card p-6 rounded-lg border border-border">
             <div className="text-4xl mb-2">💰</div>
             <h3 className="text-lg font-medium mb-1">Przychód</h3>
-            {loading ? (
-              <div className="h-6 bg-muted animate-pulse rounded" />
-            ) : (
-              <p className="text-2xl font-bold">
-                {stats.totalRevenue.toLocaleString("pl-PL", {
-                  style: "currency",
-                  currency: "PLN",
-                })}
-              </p>
-            )}
+            <p className="text-2xl font-bold">
+              {stats.totalRevenue.toLocaleString("pl-PL", {
+                style: "currency",
+                currency: "PLN",
+              })}
+            </p>
           </div>
         </div>
 

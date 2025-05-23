@@ -1,5 +1,10 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { useAuth } from "@/components/auth/AuthProvider";
 import {
   Card,
   CardContent,
@@ -9,6 +14,26 @@ import {
 } from "@/components/ui/card";
 
 export default function Login() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold">Ładowanie...</h1>
+          <p className="mt-2 text-gray-600">Proszę czekać...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <Card className="w-full max-w-md">
