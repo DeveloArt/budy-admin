@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useAuth } from "@/hooks/useAuth";
 
-interface Order {
+// UIOrder represents the fully joined order with nested objects from Supabase.
+// This type assumes .select() includes all necessary relations (size, contact_info, etc.)
+
+interface UIOrder {
   id?: string;
   status: string;
   total_price: number;
@@ -44,7 +47,7 @@ interface Order {
 
 export default function OrdersPage() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<UIOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,13 +57,22 @@ export default function OrdersPage() {
         setLoading(true);
         setError(null);
 
-        const { data: rawOrders, error: fetchError } = await supabase
-          .from("orders")
-          .select("*");
+        const { data: rawOrders, error: fetchError } = await supabase.from(
+          "orders"
+        ).select(`
+          *,
+          size (*),
+          delivery_option (*),
+          payment_method (*),
+          contact_info (*),
+          order_additional_options:order_additional_options (
+            additional_options:additional_options (*)
+          )
+        `);
 
         if (fetchError) {
           console.error("Supabase error:", fetchError);
-          throw fetchError;
+          throw new Error("Błąd zapytania do bazy danych");
         }
 
         if (!rawOrders) {
@@ -69,52 +81,35 @@ export default function OrdersPage() {
 
         console.log("Raw orders:", rawOrders);
 
-        const processedOrders = rawOrders
-          .map((order) => {
-            try {
-              // Sprawdzamy czy dane są już sparsowane czy nie
-              const isPreParsed =
-                typeof order.size === "object" && order.size !== null;
+        const processedOrders: UIOrder[] = [];
 
-              if (isPreParsed) {
-                return order as Order;
-              }
+        for (const order of rawOrders as any[]) {
+          try {
+            const isValid =
+              typeof order.size === "object" &&
+              typeof order.contact_info === "object" &&
+              typeof order.delivery_option === "object" &&
+              typeof order.payment_method === "object" &&
+              Array.isArray(order.order_additional_options);
 
-              return {
-                ...order,
-                size:
-                  typeof order.size === "string"
-                    ? JSON.parse(order.size)
-                    : order.size,
-                additional_options:
-                  typeof order.additional_options === "string"
-                    ? JSON.parse(order.additional_options)
-                    : order.additional_options,
-                delivery_option:
-                  typeof order.delivery_option === "string"
-                    ? JSON.parse(order.delivery_option)
-                    : order.delivery_option,
-                payment_method:
-                  typeof order.payment_method === "string"
-                    ? JSON.parse(order.payment_method)
-                    : order.payment_method,
-                contact_info:
-                  typeof order.contact_info === "string"
-                    ? JSON.parse(order.contact_info)
-                    : order.contact_info,
-              } as Order;
-            } catch (parseError) {
-              console.error(
-                "Błąd parsowania JSON dla zamówienia:",
-                order,
-                parseError
-              );
-              return null;
+            if (!isValid) {
+              console.warn("Nieprawidłowe dane zamówienia:", order);
+              continue;
             }
-          })
-          .filter((order): order is Order => order !== null);
 
-        console.log("Processed orders:", processedOrders);
+            const additionalOptions = order.order_additional_options
+              .map((entry: any) => entry.additional_options)
+              .filter((opt: any) => opt);
+
+            processedOrders.push({
+              ...order,
+              additional_options: additionalOptions,
+            } as UIOrder);
+          } catch (e) {
+            console.error("Błąd przetwarzania zamówienia:", order, e);
+          }
+        }
+
         setOrders(processedOrders);
       } catch (err) {
         console.error("Błąd podczas pobierania zamówień:", err);
@@ -134,6 +129,7 @@ export default function OrdersPage() {
   }, [user]);
 
   const getStatusColor = (status: string) => {
+    const normalizedStatus = status.toLowerCase();
     const colors = {
       pending: "bg-yellow-100 text-yellow-800",
       processing: "bg-blue-100 text-blue-800",
@@ -141,7 +137,7 @@ export default function OrdersPage() {
       cancelled: "bg-red-100 text-red-800",
       default: "bg-gray-100 text-gray-800",
     };
-    return colors[status as keyof typeof colors] || colors.default;
+    return colors[normalizedStatus as keyof typeof colors] || colors.default;
   };
 
   const formatDate = (dateString?: string) => {
