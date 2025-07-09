@@ -5,12 +5,11 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { BarChart2, Package, User, LogOut, Store } from "lucide-react";
+import { BarChart2, Package, LogOut, Store } from "lucide-react";
 
 const menuItems = [
   { href: "/dashboard", label: "Dashboard", icon: <BarChart2 className="w-5 h-5" /> },
   { href: "/orders", label: "Zamówienia", icon: <Package className="w-5 h-5" /> },
-  { href: "/profile", label: "Profil", icon: <User className="w-5 h-5" /> },
 ];
 
 export default function Sidebar() {
@@ -26,7 +25,14 @@ export default function Sidebar() {
       </button>
 
       {/* Sidebar */}
-      <aside className={cn("fixed top-0 left-0 h-screen bg-card border-r border-border transition-all duration-300 z-40", isCollapsed ? "-translate-x-full" : "translate-x-0", "lg:translate-x-0", isCollapsed ? "w-0" : "w-64")}>
+      <aside
+        className={cn(
+          "fixed top-0 left-0 h-screen bg-card border-r border-border transition-all duration-300 z-40",
+          isCollapsed ? "-translate-x-full" : "translate-x-0",
+          "lg:translate-x-0",
+          isCollapsed ? "w-0" : "w-64"
+        )}
+      >
         <div className="flex flex-col h-full p-4">
           {/* Logo/Nazwa */}
           <div className="flex items-center gap-2 mb-8 px-2">
@@ -39,7 +45,14 @@ export default function Sidebar() {
             <ul className="space-y-2">
               {menuItems.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className={cn("flex items-center gap-3 px-3 py-2 rounded-lg border border-border transition-colors", "hover:bg-muted", pathname === item.href ? "bg-primary/10 text-primary" : "text-foreground")}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-lg border border-border transition-colors",
+                      "hover:bg-muted",
+                      pathname === item.href ? "bg-primary/10 text-primary" : "text-foreground"
+                    )}
+                  >
                     <span className="text-xl">{item.icon}</span>
                     <span>{item.label}</span>
                   </Link>
