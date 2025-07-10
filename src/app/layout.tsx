@@ -11,11 +11,7 @@ export const metadata: Metadata = {
   description: "Panel administracyjny dla systemu Budy",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pl">
       <body className={inter.className}>
