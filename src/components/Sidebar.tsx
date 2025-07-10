@@ -5,26 +5,28 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LogOut, Store } from "lucide-react";
+import { Menu, X, LogOut, Store } from "lucide-react";
 import { menuItems } from "@/constants/menu";
 
 export default function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(true); // domyślnie schowany na mobile
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, signOut } = useAuth();
   const pathname = usePathname();
 
+  const handleToggleCollapsed = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+
   return (
     <>
-      {/* Hamburger tylko na mobile */}
-      <button className="lg:hidden fixed top-4 left-1 z-50 p-2 bg-primary text-white rounded-md" onClick={() => setIsCollapsed(!isCollapsed)}>
-        {isCollapsed ? "☰" : "✕"}
+      <button className="lg:hidden fixed top-4 left-1 z-50 p-2 bg-primary text-white rounded-md" onClick={handleToggleCollapsed}>
+        {isSidebarOpen ? <Menu className="w-6 h-6" /> : <X className="w-6 h-6" />}
       </button>
 
-      {/* Sidebar */}
       <aside
         className={cn(
           "fixed h-screen bg-card border-r border-border transition-all duration-300 z-40",
-          isCollapsed ? "-translate-x-full top-0 left-0" : "translate-x-0 top-2 left-3",
+          isSidebarOpen ? "-translate-x-full top-0 left-0" : "translate-x-0 top-2 left-4",
           "w-64 lg:translate-x-0 lg:top-0 lg:left-0"
         )}
       >
@@ -54,7 +56,6 @@ export default function Sidebar() {
             </ul>
           </nav>
 
-          {/* User info + logout */}
           <div className="border-t border-border pt-4 mt-4">
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">{user?.email?.[0]?.toUpperCase() || "?"}</div>
@@ -70,8 +71,7 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Tło przy otwartym sidebarze na mobile */}
-      {!isCollapsed && <div className="fixed inset-0 bg-black/90 z-30 lg:hidden" onClick={() => setIsCollapsed(true)} />}
+      {!isSidebarOpen && <div className="fixed inset-0 bg-black/90 z-30 lg:hidden" onClick={() => setIsSidebarOpen(true)} />}
     </>
   );
 }
