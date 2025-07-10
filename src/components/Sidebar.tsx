@@ -9,18 +9,24 @@ import { LogOut, Store } from "lucide-react";
 import { menuItems } from "@/constants/menu";
 
 export default function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // domyślnie schowany na mobile
   const { user, signOut } = useAuth();
   const pathname = usePathname();
 
   return (
     <>
-      <button className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-primary text-white rounded-md" onClick={() => setIsCollapsed(!isCollapsed)}>
+      {/* Hamburger tylko na mobile */}
+      <button className="lg:hidden fixed top-4 left-1 z-50 p-2 bg-primary text-white rounded-md" onClick={() => setIsCollapsed(!isCollapsed)}>
         {isCollapsed ? "☰" : "✕"}
       </button>
 
+      {/* Sidebar */}
       <aside
-        className={cn("fixed top-0 left-0 h-screen bg-card border-r border-border transition-all duration-300 z-40", isCollapsed ? "-translate-x-full w-0" : "translate-x-0 w-64", "lg:translate-x-0")}
+        className={cn(
+          "fixed h-screen bg-card border-r border-border transition-all duration-300 z-40",
+          isCollapsed ? "-translate-x-full top-0 left-0" : "translate-x-0 top-2 left-3",
+          "w-64 lg:translate-x-0 lg:top-0 lg:left-0"
+        )}
       >
         <div className="flex flex-col h-full p-4">
           <div className="flex items-center gap-2 mb-8 px-2">
@@ -48,6 +54,7 @@ export default function Sidebar() {
             </ul>
           </nav>
 
+          {/* User info + logout */}
           <div className="border-t border-border pt-4 mt-4">
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">{user?.email?.[0]?.toUpperCase() || "?"}</div>
@@ -63,7 +70,8 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {!isCollapsed && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setIsCollapsed(true)} />}
+      {/* Tło przy otwartym sidebarze na mobile */}
+      {!isCollapsed && <div className="fixed inset-0 bg-black/90 z-30 lg:hidden" onClick={() => setIsCollapsed(true)} />}
     </>
   );
 }
