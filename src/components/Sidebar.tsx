@@ -9,18 +9,16 @@ import { LogOut, Store } from "lucide-react";
 import { menuItems } from "@/constants/menu";
 
 export default function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(true); // domyślnie schowany na mobile
+  const [isCollapsed, setIsCollapsed] = useState(true); 
   const { user, signOut } = useAuth();
   const pathname = usePathname();
 
   return (
     <>
-      {/* Hamburger tylko na mobile */}
       <button className="lg:hidden fixed top-4 left-1 z-50 p-2 bg-primary text-white rounded-md" onClick={() => setIsCollapsed(!isCollapsed)}>
         {isCollapsed ? "☰" : "✕"}
       </button>
 
-      {/* Sidebar */}
       <aside
         className={cn(
           "fixed h-screen bg-card border-r border-border transition-all duration-300 z-40",
