@@ -5,22 +5,30 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LogOut, Store } from "lucide-react";
+import { Menu, X, LogOut, Store } from "lucide-react";
 import { menuItems } from "@/constants/menu";
 
 export default function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, signOut } = useAuth();
   const pathname = usePathname();
 
+  const handleToggleCollapsed = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
+
   return (
     <>
-      <button className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-primary text-white rounded-md" onClick={() => setIsCollapsed(!isCollapsed)}>
-        {isCollapsed ? "☰" : "✕"}
+      <button className="lg:hidden fixed top-4 left-1 z-50 p-2 bg-primary text-white rounded-md" onClick={handleToggleCollapsed}>
+        {isSidebarOpen ? <Menu className="w-6 h-6" /> : <X className="w-6 h-6" />}
       </button>
 
       <aside
-        className={cn("fixed top-0 left-0 h-screen bg-card border-r border-border transition-all duration-300 z-40", isCollapsed ? "-translate-x-full w-0" : "translate-x-0 w-64", "lg:translate-x-0")}
+        className={cn(
+          "fixed h-screen bg-card border-r border-border transition-all duration-300 z-40",
+          isSidebarOpen ? "-translate-x-full top-0 left-0" : "translate-x-0 top-2 left-4",
+          "w-64 lg:translate-x-0 lg:top-0 lg:left-0"
+        )}
       >
         <div className="flex flex-col h-full p-4">
           <div className="flex items-center gap-2 mb-8 px-2">
@@ -63,7 +71,7 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {!isCollapsed && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setIsCollapsed(true)} />}
+      {!isSidebarOpen && <div className="fixed inset-0 bg-black/90 z-30 lg:hidden" onClick={() => setIsSidebarOpen(true)} />}
     </>
   );
 }
