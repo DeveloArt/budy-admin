@@ -3,7 +3,6 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 
 interface DashboardStats {
   totalOrders: number;
@@ -13,7 +12,6 @@ interface DashboardStats {
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
-  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({
     totalOrders: 0,
     pendingOrders: 0,
@@ -21,26 +19,15 @@ export default function DashboardPage() {
   });
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [user, loading, router]);
-
-  useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data: orders, error } = await supabase
-          .from("orders")
-          .select("*");
+        const { data: orders, error } = await supabase.from("orders").select("*");
 
         if (error) throw error;
 
         const totalOrders = orders?.length || 0;
-        const pendingOrders =
-          orders?.filter((o) => o.status === "pending").length || 0;
-        const totalRevenue =
-          orders?.reduce((sum, order) => sum + (order.total_price || 0), 0) ||
-          0;
+        const pendingOrders = orders?.filter((o) => o.status === "pending").length || 0;
+        const totalRevenue = orders?.reduce((sum, order) => sum + (order.total_price || 0), 0) || 0;
 
         setStats({ totalOrders, pendingOrders, totalRevenue });
       } catch (error) {
@@ -67,12 +54,8 @@ export default function DashboardPage() {
       <div className="p-6">
         {/* Powitanie */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-2">
-            Witaj, {user?.email?.split("@")[0] || "Użytkowniku"}! 👋
-          </h1>
-          <p className="text-muted-foreground">
-            Oto przegląd Twojego panelu administracyjnego
-          </p>
+          <h1 className="text-2xl font-bold mb-2">Witaj, {user?.email?.split("@")[0] || "Użytkowniku"}! 👋</h1>
+          <p className="text-muted-foreground">Oto przegląd Twojego panelu administracyjnego</p>
         </div>
 
         {/* Statystyki */}
