@@ -56,7 +56,7 @@ export function TableHeaderRow({
         filterButtonRef={statusButtonRef}
         showDropdown={showStatusDropdown}
         setShowDropdown={setShowStatusDropdown}
-        dropdownOptions={["All", ...allStatuses]}
+        dropdownOptions={["Wszystkie", ...allStatuses]}
         onFilter={onStatusFilter}
         filterValue={statusFilter}
         sortKey="status"
@@ -73,7 +73,7 @@ export function TableHeaderRow({
         filterButtonRef={productButtonRef}
         showDropdown={showProductDropdown}
         setShowDropdown={setShowProductDropdown}
-        dropdownOptions={["All", ...allSizes]}
+        dropdownOptions={["Wszystkie", ...allSizes]}
         onFilter={onProductFilter}
         filterValue={productFilter}
         sortKey="size"

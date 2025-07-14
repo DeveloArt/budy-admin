@@ -75,7 +75,7 @@ export function TableHeaderCell({
                   key={option}
                   type="button"
                   onClick={() => {
-                    onFilter?.(option === "All" ? null : option);
+                    onFilter?.(option === "Wszystkie" ? null : option);
                     setShowDropdown(false);
                   }}
                   className="block w-full text-left px-4 py-2 hover:bg-muted"

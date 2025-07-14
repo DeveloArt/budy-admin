@@ -24,8 +24,21 @@ export async function GET(request: Request) {
   const size = searchParams.get("size");
 
   let query = supabase.from("orders").select("*");
+
   if (status) query = query.eq("status", status);
-  if (size) query = query.eq("size", size);
+
+  if (size) {
+    try {
+      const sizeObj = JSON.parse(size);
+      if (sizeObj.id) {
+        query = query.contains("size", { id: sizeObj.id });
+      } else {
+        query = query.contains("size", { name: size });
+      }
+    } catch {
+      query = query.contains("size", { name: size });
+    }
+  }
 
   const { data, error } = await query;
 
