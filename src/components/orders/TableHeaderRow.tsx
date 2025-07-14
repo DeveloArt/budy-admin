@@ -24,31 +24,45 @@ interface TableHeaderRowProps {
   onSortPrice: () => void;
 }
 
-export function TableHeaderRow(props: TableHeaderRowProps) {
+export function TableHeaderRow({
+  sortKey,
+  sortDirection,
+  onSortDate,
+  statusButtonRef,
+  showStatusDropdown,
+  setShowStatusDropdown,
+  allStatuses,
+  onStatusFilter,
+  statusFilter,
+  statusSortDirection,
+  onSortStatus,
+  productButtonRef,
+  showProductDropdown,
+  setShowProductDropdown,
+  allSizes,
+  onProductFilter,
+  productFilter,
+  productSortDirection,
+  onSortProduct,
+  onSortPrice,
+}: TableHeaderRowProps) {
   return (
     <tr>
       <TableHeaderCell label="ID" />
-      <TableHeaderCell
-        label="DATA"
-        sortKey="created_at"
-        currentSortKey={props.sortKey}
-        sortDirection={props.sortDirection}
-        onSort={props.onSortDate}
-        isSortable
-      />
+      <TableHeaderCell label="DATA" sortKey="created_at" currentSortKey={sortKey} sortDirection={sortDirection} onSort={onSortDate} isSortable />
       <TableHeaderCell
         label="STATUS"
         isFilterable
-        filterButtonRef={props.statusButtonRef}
-        showDropdown={props.showStatusDropdown}
-        setShowDropdown={props.setShowStatusDropdown}
-        dropdownOptions={["All", ...props.allStatuses]}
-        onFilter={props.onStatusFilter}
-        filterValue={props.statusFilter}
+        filterButtonRef={statusButtonRef}
+        showDropdown={showStatusDropdown}
+        setShowDropdown={setShowStatusDropdown}
+        dropdownOptions={["All", ...allStatuses]}
+        onFilter={onStatusFilter}
+        filterValue={statusFilter}
         sortKey="status"
-        currentSortKey={props.sortKey}
-        sortDirection={props.statusSortDirection}
-        onSort={props.onSortStatus}
+        currentSortKey={sortKey}
+        sortDirection={statusSortDirection}
+        onSort={onSortStatus}
         isSortable
         funnel
       />
@@ -56,27 +70,20 @@ export function TableHeaderRow(props: TableHeaderRowProps) {
       <TableHeaderCell
         label="PRODUKT"
         isFilterable
-        filterButtonRef={props.productButtonRef}
-        showDropdown={props.showProductDropdown}
-        setShowDropdown={props.setShowProductDropdown}
-        dropdownOptions={["All", ...props.allSizes]}
-        onFilter={props.onProductFilter}
-        filterValue={props.productFilter}
+        filterButtonRef={productButtonRef}
+        showDropdown={showProductDropdown}
+        setShowDropdown={setShowProductDropdown}
+        dropdownOptions={["All", ...allSizes]}
+        onFilter={onProductFilter}
+        filterValue={productFilter}
         sortKey="size"
-        currentSortKey={props.sortKey}
-        sortDirection={props.productSortDirection}
-        onSort={props.onSortProduct}
+        currentSortKey={sortKey}
+        sortDirection={productSortDirection}
+        onSort={onSortProduct}
         isSortable
         funnel
       />
-      <TableHeaderCell
-        label="CENA"
-        sortKey="total_price"
-        currentSortKey={props.sortKey}
-        sortDirection={props.sortDirection}
-        onSort={props.onSortPrice}
-        isSortable
-      />
+      <TableHeaderCell label="CENA" sortKey="total_price" currentSortKey={sortKey} sortDirection={sortDirection} onSort={onSortPrice} isSortable />
       <TableHeaderCell label="AKCJE" />
     </tr>
   );
