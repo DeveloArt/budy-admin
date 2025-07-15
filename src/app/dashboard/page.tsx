@@ -3,7 +3,6 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { Package, Hourglass, HandCoins } from "lucide-react";
 
 interface DashboardStats {
@@ -14,18 +13,11 @@ interface DashboardStats {
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
-  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({
     totalOrders: 0,
     pendingOrders: 0,
     totalRevenue: 0,
   });
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [user, loading, router]);
 
   useEffect(() => {
     const fetchStats = async () => {
