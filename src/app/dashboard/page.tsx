@@ -3,6 +3,7 @@ import { useAuth } from "@/components/auth/AuthProvider";
 import { AuthGuard } from "@/components/AuthGuard";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { Package, Hourglass, HandCoins } from "lucide-react";
 
 interface DashboardStats {
   totalOrders: number;
@@ -52,28 +53,34 @@ export default function DashboardPage() {
   return (
     <AuthGuard>
       <div className="p-6">
-        {/* Powitanie */}
+        {/* Greeting */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-2">Witaj, {user?.email?.split("@")[0] || "Użytkowniku"}! 👋</h1>
-          <p className="text-muted-foreground">Oto przegląd Twojego panelu administracyjnego</p>
+          <h1 className="text-2xl font-bold mb-2">Witaj, {user?.email?.split("@")[0] || "Użytkowniku"}!</h1>
+          <p className="text-muted-foreground">Oto przegląd Twojego panelu administracyjnego:</p>
         </div>
 
-        {/* Statystyki */}
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-card p-6 rounded-lg border border-border">
-            <div className="text-4xl mb-2">📦</div>
+            <div className="text-4xl mb-2 text-primary">
+              <Package className="w-10 h-10" />
+            </div>
             <h3 className="text-lg font-medium mb-1">Wszystkie zamówienia</h3>
             <p className="text-2xl font-bold">{stats.totalOrders}</p>
           </div>
 
           <div className="bg-card p-6 rounded-lg border border-border">
-            <div className="text-4xl mb-2">⏳</div>
+            <div className="text-4xl mb-2 text-primary">
+              <Hourglass className="w-10 h-10" />
+            </div>
             <h3 className="text-lg font-medium mb-1">Oczekujące</h3>
             <p className="text-2xl font-bold">{stats.pendingOrders}</p>
           </div>
 
           <div className="bg-card p-6 rounded-lg border border-border">
-            <div className="text-4xl mb-2">💰</div>
+            <div className="text-4xl mb-2 text-primary">
+              <HandCoins className="w-10 h-10" />
+            </div>
             <h3 className="text-lg font-medium mb-1">Przychód</h3>
             <p className="text-2xl font-bold">
               {stats.totalRevenue.toLocaleString("pl-PL", {
@@ -84,7 +91,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Ostatnie aktywności */}
+        {/* Recent activity */}
         <div className="bg-card rounded-lg border border-border p-6">
           <h2 className="text-xl font-bold mb-4">Ostatnie aktywności</h2>
           <div className="space-y-4">
