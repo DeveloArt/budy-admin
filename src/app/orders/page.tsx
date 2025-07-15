@@ -4,10 +4,15 @@ import { useOrders } from "@/hooks/useOrders";
 import { TableHeaderRow } from "@/components/orders/TableHeaderRow";
 import { OrderRow } from "@/components/orders/OrderRow";
 import { AuthGuard } from "@/components/AuthGuard";
+import { Input } from "@/components/ui/input";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Search, X } from "lucide-react";
 
 export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [productFilter, setProductFilter] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 350);
   const [sortKey, setSortKey] = useState<"created_at" | "status" | "size" | "total_price" | null>("created_at");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [statusSortDirection, setStatusSortDirection] = useState<"asc" | "desc">("asc");
@@ -20,6 +25,7 @@ export default function OrdersPage() {
   const { orders, loading, error } = useOrders({
     status: statusFilter ?? undefined,
     size: productFilter ?? undefined,
+    search: debouncedSearchTerm || undefined,
   });
 
   const allStatuses = useMemo(() => Array.from(new Set(orders.map((o) => o.status).filter(Boolean))).sort(), [orders]);
@@ -92,6 +98,11 @@ export default function OrdersPage() {
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Zamówienia</h1>
+          <div className="relative w-100">
+            <Input placeholder="Szukaj zamówień..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-8 pr-8" />
+            <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+            {searchTerm && <X className="absolute right-2.5 top-3 h-4 w-4 text-muted-foreground cursor-pointer" onClick={() => setSearchTerm("")} />}
+          </div>
         </div>
 
         {error && <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">Błąd: {error}</div>}
