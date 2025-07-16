@@ -22,6 +22,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
   const size = searchParams.get("size");
+  const search = searchParams.get("search");
 
   let query = supabase.from("orders").select("*");
 
@@ -46,7 +47,15 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const orders = (data ?? []).map((order) => parseJsonFields(order, ["size", "delivery_option", "payment_method", "contact_info", "additional_options"]));
+  let orders = (data ?? []).map((order) => parseJsonFields(order, ["size", "delivery_option", "payment_method", "contact_info", "additional_options"]));
+
+  if (search) {
+    const term = search.toLowerCase();
+    orders = orders.filter((order) => {
+      const orderString = JSON.stringify(order).toLowerCase();
+      return orderString.includes(term);
+    });
+  }
 
   return NextResponse.json({ orders });
 }

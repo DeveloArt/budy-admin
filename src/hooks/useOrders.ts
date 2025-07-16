@@ -4,9 +4,10 @@ import { UIOrder } from "@/types/UIOrder";
 type UseOrdersParams = {
   status?: string;
   size?: string;
+  search?: string;
 };
 
-export function useOrders({ status, size }: UseOrdersParams) {
+export function useOrders({ status, size, search }: UseOrdersParams) {
   const [orders, setOrders] = useState<UIOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +21,7 @@ export function useOrders({ status, size }: UseOrdersParams) {
         const params = new URLSearchParams();
         if (status) params.append("status", status);
         if (size) params.append("size", size);
+        if (search) params.append("search", search);
 
         const res = await fetch(`/api/orders?${params.toString()}`);
         const json = await res.json();
@@ -38,7 +40,7 @@ export function useOrders({ status, size }: UseOrdersParams) {
     };
 
     fetchOrders();
-  }, [status, size]);
+  }, [status, size, search]);
 
   return { orders, loading, error };
 }
