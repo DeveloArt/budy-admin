@@ -29,7 +29,7 @@ type HeaderButtonProps = {
 };
 
 function HeaderButton({ label, onClick, variant, icon, buttonRef }: HeaderButtonProps) {
-  const baseClasses = "text-xs font-medium uppercase border border-border px-2 py-1 cursor-pointer hover:bg-muted/80";
+  const baseClasses = "text-sm font-medium uppercase border border-border px-2 py-1 cursor-pointer hover:bg-muted/80";
 
   const variantClasses = variant === "sort" ? "text-muted-foreground rounded flex items-center gap-1" : "text-sm rounded-l bg-muted flex items-center gap-1";
 
@@ -58,7 +58,7 @@ export function TableHeaderCell({
   funnel = false,
 }: TableHeaderCellProps) {
   return (
-    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+    <th className="px-6 py-3 text-left font-medium text-muted-foreground uppercase tracking-wider">
       <div className="flex flex-col items-start space-y-1">
         {isFilterable && filterButtonRef && setShowDropdown && (
           <div className="relative">

@@ -105,110 +105,110 @@ export default function OrdersPage() {
         ) : orders.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">Brak zamówień do wyświetlenia</div>
         ) : (
-          <>
-            <div className="overflow-x-auto rounded-lg border border-border">
-              <table className="min-w-full divide-y divide-border">
-                <thead className="bg-muted">
-                  <TableHeaderRow
-                    sortKey={sortKey ?? "created_at"}
-                    sortDirection={sortDirection}
-                    statusSortDirection={statusSortDirection}
-                    productSortDirection={productSortDirection}
-                    onSortDate={() => {
-                      setSortKey("created_at");
-                      setSortDirection((prev) => (sortKey === "created_at" ? (prev === "asc" ? "desc" : "asc") : "desc"));
-                    }}
-                    onSortStatus={() => {
-                      setSortKey("status");
-                      setStatusSortDirection((prev) => (sortKey === "status" ? (prev === "asc" ? "desc" : "asc") : "asc"));
-                    }}
-                    onSortProduct={() => {
-                      setSortKey("size");
-                      setProductSortDirection((prev) => (sortKey === "size" ? (prev === "asc" ? "desc" : "asc") : "asc"));
-                    }}
-                    onSortPrice={() => {
-                      setSortKey("total_price");
-                      setSortDirection((prev) => (sortKey === "total_price" ? (prev === "asc" ? "desc" : "asc") : "desc"));
-                    }}
-                    statusButtonRef={statusButtonRef}
-                    showStatusDropdown={showStatusDropdown}
-                    setShowStatusDropdown={setShowStatusDropdown}
-                    allStatuses={allStatuses}
-                    onStatusFilter={setStatusFilter}
-                    statusFilter={statusFilter}
-                    productButtonRef={productButtonRef}
-                    showProductDropdown={showProductDropdown}
-                    setShowProductDropdown={setShowProductDropdown}
-                    allSizes={allSizes}
-                    onProductFilter={setProductFilter}
-                    productFilter={productFilter}
-                  />
-                </thead>
-                <tbody>
-                  {sortedOrders.map((order, index) => {
-                    const isSelected = selectedOrder?.id === order.id;
-                    return (
-                      <React.Fragment key={order.id || index}>
-                        <OrderRow
-                          order={order}
-                          index={index}
-                          getStatusColor={getStatusColor}
-                          formatDate={formatDate}
-                          formatPrice={formatPrice}
-                          onShowDetails={() => setSelectedOrder(isSelected ? null : order)}
-                        />
-                        {isSelected && (
-                          <tr className="bg-muted/10">
-                            <td colSpan={7} className="p-4 animate-slideDown transition-all">
-                              <div className="p-4 border border-border rounded-md bg-card">
-                                <h2 className="text-lg font-semibold mb-2">Szczegóły zamówienia #{order.id}</h2>
-                                <p>
-                                  <strong>Data:</strong> {formatDate(order.created_at)}
-                                </p>
-                                <p>
-                                  <strong>Status:</strong> <span className={`${getStatusColor(order.status)} px-2 py-1 rounded-full`}>{order.status}</span>
-                                </p>
-                                <p>
-                                  <strong>Klient:</strong> {order.contact_info?.first_name} {order.contact_info?.last_name}
-                                </p>
-                                <p>
-                                  <strong>Telefon:</strong> {order.contact_info?.phone || "-"}
-                                </p>
-                                <p>
-                                  <strong>Email:</strong> {order.contact_info?.email || "-"}
-                                </p>
-                                <p>
-                                  <strong>Adres:</strong> {order.contact_info?.street} {order.contact_info.house_number}, {order.contact_info?.postal_code} {order.contact_info?.city}
-                                </p>
-                                <p>
-                                  <strong>Dostawa:</strong> {order.delivery_option?.name}
-                                </p>
-                                <p>
-                                  <strong>Płatność:</strong> {order.payment_method?.name}
-                                </p>
-                                <p>
-                                  <strong>Rozmiar:</strong> {order.size?.name}
-                                </p>
-                                <p>
-                                  <strong>Dodatki:</strong> {order.additional_options?.length > 0 ? order.additional_options.map((o) => o.name).join(", ") : "Brak"}
-                                </p>
-                                <p>
-                                  <strong>Cena:</strong> {formatPrice(order.total_price)}
-                                </p>
-                                <button className="mt-4 px-4 py-2 bg-gray-800 text-white hover:bg-gray-700 rounded transition-colors" onClick={() => setSelectedOrder(null)}>
-                                  Zamknij
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </>
+          <div className="overflow-x-auto rounded-lg border border-border">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted">
+                <TableHeaderRow
+                  sortKey={sortKey ?? "created_at"}
+                  sortDirection={sortDirection}
+                  statusSortDirection={statusSortDirection}
+                  productSortDirection={productSortDirection}
+                  onSortDate={() => {
+                    setSortKey("created_at");
+                    setSortDirection((prev) => (sortKey === "created_at" ? (prev === "asc" ? "desc" : "asc") : "desc"));
+                  }}
+                  onSortStatus={() => {
+                    setSortKey("status");
+                    setStatusSortDirection((prev) => (sortKey === "status" ? (prev === "asc" ? "desc" : "asc") : "asc"));
+                  }}
+                  onSortProduct={() => {
+                    setSortKey("size");
+                    setProductSortDirection((prev) => (sortKey === "size" ? (prev === "asc" ? "desc" : "asc") : "asc"));
+                  }}
+                  onSortPrice={() => {
+                    setSortKey("total_price");
+                    setSortDirection((prev) => (sortKey === "total_price" ? (prev === "asc" ? "desc" : "asc") : "desc"));
+                  }}
+                  statusButtonRef={statusButtonRef}
+                  showStatusDropdown={showStatusDropdown}
+                  setShowStatusDropdown={setShowStatusDropdown}
+                  allStatuses={allStatuses}
+                  onStatusFilter={setStatusFilter}
+                  statusFilter={statusFilter}
+                  productButtonRef={productButtonRef}
+                  showProductDropdown={showProductDropdown}
+                  setShowProductDropdown={setShowProductDropdown}
+                  allSizes={allSizes}
+                  onProductFilter={setProductFilter}
+                  productFilter={productFilter}
+                />
+              </thead>
+              <tbody>
+                {sortedOrders.map((order, index) => {
+                  const isSelected = selectedOrder?.id === order.id;
+                  return (
+                    <React.Fragment key={order.id || index}>
+                      <OrderRow
+                        order={order}
+                        index={index}
+                        getStatusColor={getStatusColor}
+                        formatDate={formatDate}
+                        formatPrice={formatPrice}
+                        onShowDetails={() => setSelectedOrder(isSelected ? null : order)}
+                      />
+                      {isSelected && (
+                        <tr className="bg-muted/10">
+                          <td colSpan={7} className="p-4 animate-slideDown transition-all">
+                            <div className="p-4 border border-border rounded-md bg-card">
+                              <h2 className="text-lg font-semibold mb-2">
+                                Szczegóły zamówienia <code className="font-normal text-base">#{order.id}</code>
+                              </h2>
+                              <p>
+                                <strong>Data:</strong> {formatDate(order.created_at)}
+                              </p>
+                              <p>
+                                <strong>Status:</strong> <span className={`${getStatusColor(order.status)} px-2 py-1 rounded-full`}>{order.status}</span>
+                              </p>
+                              <p>
+                                <strong>Klient:</strong> {order.contact_info?.first_name} {order.contact_info?.last_name}
+                              </p>
+                              <p>
+                                <strong>Telefon:</strong> {order.contact_info?.phone || "-"}
+                              </p>
+                              <p>
+                                <strong>Email:</strong> {order.contact_info?.email || "-"}
+                              </p>
+                              <p>
+                                <strong>Adres:</strong> {order.contact_info?.street} {order.contact_info?.house_number}, {order.contact_info?.postal_code} {order.contact_info?.city}
+                              </p>
+                              <p>
+                                <strong>Dostawa:</strong> {order.delivery_option?.name}
+                              </p>
+                              <p>
+                                <strong>Płatność:</strong> {order.payment_method?.name}
+                              </p>
+                              <p>
+                                <strong>Rozmiar:</strong> {order.size?.name}
+                              </p>
+                              <p>
+                                <strong>Dodatki:</strong> {order.additional_options?.length > 0 ? order.additional_options.map((o) => o.name).join(", ") : "Brak"}
+                              </p>
+                              <p>
+                                <strong>Cena:</strong> {formatPrice(order.total_price)}
+                              </p>
+                              <button className="mt-4 px-4 py-2 bg-gray-800 text-white hover:bg-gray-700 rounded border transition-colors cursor-pointer" onClick={() => setSelectedOrder(null)}>
+                                Zamknij
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </AuthGuard>

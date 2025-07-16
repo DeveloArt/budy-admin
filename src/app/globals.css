@@ -74,14 +74,14 @@ body {
   border-color: var(--border);
 }
 
-/* Podstawowe style dla przycisków */
+/* Basic styles for buttons */
 button,
 .button {
   border-radius: var(--radius);
   transition: all 0.2s ease-in-out;
 }
 
-/* Style dla inputów */
+/* Style for inputs */
 input,
 textarea,
 select {
@@ -98,7 +98,7 @@ select:focus {
   box-shadow: 0 0 0 2px rgba(173, 181, 189, 0.2);
 }
 
-/* Podstawowe animacje */
+/* Basic animations */
 .animate-fade {
   transition: opacity 0.3s ease-in-out;
 }
@@ -131,7 +131,7 @@ select:focus {
   background: var(--primary);
 }
 
-/* Dodatkowe style dla lepszej czytelności */
+/* Additional styles for better readability */
 .table-row-alternate:nth-child(even) {
   background-color: var(--muted);
 }
@@ -145,7 +145,7 @@ select:focus {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Style dla nagłówków */
+/* Header styles */
 h1,
 h2,
 h3,

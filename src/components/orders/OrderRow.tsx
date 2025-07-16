@@ -7,7 +7,7 @@ export const OrderRow = ({
   getStatusColor,
   formatDate,
   formatPrice,
-  onShowDetails, // funkcja do wyświetlania szczegółów
+  onShowDetails,
 }: {
   order: UIOrder;
   index: number;
@@ -17,7 +17,9 @@ export const OrderRow = ({
   onShowDetails: (order: UIOrder) => void;
 }) => (
   <tr className={index % 2 === 0 ? "bg-card" : "bg-muted/5"}>
-    <td className="px-4 py-4 whitespace-nowrap text-sm">{order.id || `#${index + 1}`}</td>
+    <td className="px-4 py-4 whitespace-nowrap text-sm">
+      <code>{order.id || `#${index + 1}`}</code>
+    </td>
     <td className="px-4 py-4 whitespace-nowrap text-sm">{formatDate(order.created_at)}</td>
     <td className="px-4 py-4 whitespace-nowrap">
       <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>{order.status}</span>
@@ -32,12 +34,12 @@ export const OrderRow = ({
       {order.additional_options.length > 0 && <span className="text-muted-foreground block">+ {order.additional_options.length} dodatki</span>}
     </td>
     <td className="px-4 py-4 whitespace-nowrap text-sm">{formatPrice(order.total_price)}</td>
-    <td className="px-4 py-4 whitespace-nowrap text-sm flex flex-col space-y-1">
-      <button onClick={() => onShowDetails(order)} className="text-primary hover:text-primary/80 transition-colors">
+    <td className="px-4 py-4 whitespace-nowrap text-sm flex flex-row space-y-1">
+      <button onClick={() => onShowDetails(order)} className="text-primary hover:text-primary/80 transition-colors border text-base px-2 py-2 mb-0 me-1 cursor-pointer">
         Szczegóły
       </button>
 
-      <button className="text-red-500 hover:text-red-600 transition-colors">Usuń</button>
+      <button className="text-red-500 hover:text-red-600 transition-colors border text-base px-2 py-2 ms-1 cursor-pointer">Usuń</button>
     </td>
   </tr>
 );
