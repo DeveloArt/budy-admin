@@ -31,6 +31,7 @@ export interface UIOrder {
     phone: string;
     address?: string;
     street?: string;
+    house_number?: string;
     last_name: string;
     first_name: string;
     postal_code: string;

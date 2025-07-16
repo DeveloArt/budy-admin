@@ -16,9 +16,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pl">
       <body className={inter.className}>
         <Providers>
-          <div className="flex min-h-screen bg-background">
-            <Sidebar />
-            <main className="flex-1 lg:ml-64">{children}</main>
+          <div className="relative min-h-screen bg-background">
+            {/* Sidebar z absolutnym pozycjonowaniem i stałą szerokością */}
+            <div className="relative min-h-screen bg-background">
+              <Sidebar />
+              <main className="lg:pl-64 overflow-x-hidden min-h-screen">{children}</main>
+            </div>
           </div>
         </Providers>
       </body>
