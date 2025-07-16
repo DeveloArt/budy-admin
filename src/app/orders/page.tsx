@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { useOrders } from "@/hooks/useOrders";
 import { TableHeaderRow } from "@/components/orders/TableHeaderRow";
 import { OrderRow } from "@/components/orders/OrderRow";
@@ -7,6 +7,7 @@ import { AuthGuard } from "@/components/AuthGuard";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Search, X } from "lucide-react";
+import { UIOrder } from "@/types/UIOrder";
 
 export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -19,6 +20,7 @@ export default function OrdersPage() {
   const [productSortDirection, setProductSortDirection] = useState<"asc" | "desc">("asc");
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<UIOrder | null>(null);
   const statusButtonRef = useRef<HTMLButtonElement>(null);
   const productButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -153,9 +155,68 @@ export default function OrdersPage() {
                 />
               </thead>
               <tbody>
-                {sortedOrders.map((order, index) => (
-                  <OrderRow key={order.id || index} order={order} index={index} getStatusColor={getStatusColor} formatDate={formatDate} formatPrice={formatPrice} />
-                ))}
+                {sortedOrders.map((order, index) => {
+                  const isSelected = selectedOrder?.id === order.id;
+                  return (
+                    <React.Fragment key={order.id || index}>
+                      <OrderRow
+                        order={order}
+                        index={index}
+                        getStatusColor={getStatusColor}
+                        formatDate={formatDate}
+                        formatPrice={formatPrice}
+                        onShowDetails={() => setSelectedOrder(isSelected ? null : order)}
+                      />
+                      {isSelected && (
+                        <tr className="bg-muted/10">
+                          <td colSpan={7} className="p-4 animate-slideDown transition-all">
+                            <div className="p-4 border border-border rounded-md bg-card">
+                              <h2 className="text-lg font-semibold mb-2">
+                                Szczegóły zamówienia <code className="font-normal text-base">#{order.id}</code>
+                              </h2>
+                              <p>
+                                <strong>Data:</strong> {formatDate(order.created_at)}
+                              </p>
+                              <p>
+                                <strong>Status:</strong> <span className={`${getStatusColor(order.status)} px-2 py-1 rounded-full`}>{order.status}</span>
+                              </p>
+                              <p>
+                                <strong>Klient:</strong> {order.contact_info?.first_name} {order.contact_info?.last_name}
+                              </p>
+                              <p>
+                                <strong>Telefon:</strong> {order.contact_info?.phone || "-"}
+                              </p>
+                              <p>
+                                <strong>Email:</strong> {order.contact_info?.email || "-"}
+                              </p>
+                              <p>
+                                <strong>Adres:</strong> {order.contact_info?.street} {order.contact_info?.house_number}, {order.contact_info?.postal_code} {order.contact_info?.city}
+                              </p>
+                              <p>
+                                <strong>Dostawa:</strong> {order.delivery_option?.name}
+                              </p>
+                              <p>
+                                <strong>Płatność:</strong> {order.payment_method?.name}
+                              </p>
+                              <p>
+                                <strong>Rozmiar:</strong> {order.size?.name}
+                              </p>
+                              <p>
+                                <strong>Dodatki:</strong> {order.additional_options?.length > 0 ? order.additional_options.map((o) => o.name).join(", ") : "Brak"}
+                              </p>
+                              <p>
+                                <strong>Cena:</strong> {formatPrice(order.total_price)}
+                              </p>
+                              <button className="mt-4 px-4 py-2 bg-gray-800 text-white hover:bg-gray-700 rounded border transition-colors cursor-pointer" onClick={() => setSelectedOrder(null)}>
+                                Zamknij
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
               </tbody>
             </table>
           </div>
