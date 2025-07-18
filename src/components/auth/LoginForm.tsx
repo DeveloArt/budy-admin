@@ -35,26 +35,8 @@ export function LoginForm() {
   return (
     <form onSubmit={handleLogin} className="space-y-4">
       <div className="space-y-2">
-        <Input
-          id="email-address"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Adres email"
-        />
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Hasło"
-        />
+        <Input id="email-address" name="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Adres email" />
+        <Input id="password" name="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Hasło" />
       </div>
 
       {error && (
@@ -63,12 +45,7 @@ export function LoginForm() {
         </Alert>
       )}
 
-      <Button
-        type="submit"
-        variant="primary"
-        className="w-full"
-        disabled={loading}
-      >
+      <Button type="submit" variant="primary" className="w-full" disabled={loading}>
         {loading ? "Logowanie..." : "Zaloguj się"}
       </Button>
     </form>
