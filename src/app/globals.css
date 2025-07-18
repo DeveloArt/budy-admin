@@ -43,8 +43,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes scaleIn {
@@ -107,11 +111,14 @@ button,
 
 /* Style for inputs */
 input,
-textarea,
-select {
+textarea {
   border-radius: var(--radius);
   border: 1px solid var(--input);
   background-color: var(--input);
+}
+select {
+  border-radius: var(--radius);
+  border: 1px solid var(--input);
 }
 
 input:focus,
