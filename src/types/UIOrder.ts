@@ -1,5 +1,5 @@
 export interface UIOrder {
-  id?: string;
+  id: string;
   status: string;
   total_price: number;
   created_at?: string;
