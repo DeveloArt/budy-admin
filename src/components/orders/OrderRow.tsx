@@ -24,7 +24,7 @@ export const OrderRow = ({
     </td>
     <td className="px-4 py-4 whitespace-nowrap text-sm">{formatDate(order.created_at)}</td>
     <td className="px-4 py-4 whitespace-nowrap">
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>{order.status}</span>
+      <span className={`px-2 py-1 text-sm font-medium rounded-full ${getStatusColor(order.status)}`}>{order.status}</span>
     </td>
     <td className="px-4 py-4 whitespace-nowrap text-sm">
       {order.contact_info.first_name} {order.contact_info.last_name}

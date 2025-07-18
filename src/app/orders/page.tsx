@@ -1,15 +1,20 @@
 "use client";
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useOrders } from "@/hooks/useOrders";
-import { TableHeaderRow } from "@/components/orders/TableHeaderRow";
-import { OrderRow } from "@/components/orders/OrderRow";
-import { AuthGuard } from "@/components/AuthGuard";
-import { Input } from "@/components/ui/input";
-import { DeleteConfirmationModal } from "@/components/orders/DeleteConfirmationModal";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useNotificationState } from "@/hooks/useNotificationState";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useDeleteOrder } from "@/hooks/useDeleteOrder";
-import { Search, X } from "lucide-react";
+
+import { AuthGuard } from "@/components/AuthGuard";
+import { TableHeaderRow } from "@/components/orders/TableHeaderRow";
+import { OrderRow } from "@/components/orders/OrderRow";
+import { Input } from "@/components/ui/input";
+import { DeleteConfirmationModal } from "@/components/orders/DeleteConfirmationModal";
+import { Switch } from "@/components/ui/switch";
+
 import { UIOrder } from "@/types/UIOrder";
+import { Search, X } from "lucide-react";
 
 export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -27,6 +32,23 @@ export default function OrdersPage() {
   const productButtonRef = useRef<HTMLButtonElement>(null);
   const [orderToDelete, setOrderToDelete] = useState<UIOrder | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [permissionStatus, setPermissionStatus] = useState<NotificationPermission | null>(null);
+  const { notificationsEnabled, setNotificationsEnabled } = useNotificationState();
+
+  useEffect(() => {
+    if (notificationsEnabled && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, [notificationsEnabled]);
+
+  useEffect(() => {
+    if (typeof Notification !== "undefined") {
+      const update = () => setPermissionStatus(Notification.permission);
+      update();
+      window.addEventListener("focus", update);
+      return () => window.removeEventListener("focus", update);
+    }
+  }, []);
 
   const { orders, loading, error } = useOrders({
     status: statusFilter ?? undefined,
@@ -131,10 +153,25 @@ export default function OrdersPage() {
         />
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Zamówienia</h1>
-          <div className="relative w-100">
-            <Input placeholder="Szukaj zamówień..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-8 pr-8" />
-            <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
-            {searchTerm && <X className="absolute right-2.5 top-3 h-4 w-4 text-muted-foreground cursor-pointer" onClick={() => setSearchTerm("")} />}
+          <div className="flex items-center gap-4">
+            {permissionStatus === "denied" && notificationsEnabled && (
+              <p className="text-sm text-red-500 text-end">
+                Powiadomienia są zablokowane w przeglądarce.
+                <br />
+                Włącz je ręcznie w ustawieniach strony.
+              </p>
+            )}
+            <div className="flex items-center gap-2">
+              <Switch className="" id="notifications" checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
+              <label htmlFor="notifications" className="text-sm text-muted-foreground">
+                Powiadomienia
+              </label>
+            </div>
+            <div className="relative w-100">
+              <Input placeholder="Szukaj zamówień..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-8 pr-8" />
+              <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+              {searchTerm && <X className="absolute right-2.5 top-3 h-4 w-4 text-muted-foreground cursor-pointer" onClick={() => setSearchTerm("")} />}
+            </div>
           </div>
         </div>
 
