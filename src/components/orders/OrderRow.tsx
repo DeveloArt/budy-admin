@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { UIOrder } from "@/types/UIOrder";
 import { useUpdateOrderStatus } from "@/hooks/useUpdateOrderStatus";
 import { StatusChangeModal } from "./StatusChangeConfirmation";
+import { ArrowBigDown } from "lucide-react";
 
 export const OrderRow = ({
   order,
@@ -69,35 +70,36 @@ export const OrderRow = ({
           <code>{order.id || `#${index + 1}`}</code>
         </td>
         <td className="px-4 py-4 whitespace-nowrap text-sm">{formatDate(order.created_at)}</td>
-        <td className="px-4 py-4 whitespace-nowrap">
-          <div className="relative inline-block w-full">
-            <select
-              value={pendingStatus ?? localStatus}
-              onChange={handleStatusChange}
-              className={`
-        appearance-none 
-        bg-white
-        text-sm 
-        font-medium 
-        py-2 
-        pl-3 
-        pr-8 
-        rounded-md 
-        focus:outline-none 
-        cursor-pointer 
-        border 
-        ${getStatusColor(pendingStatus ?? localStatus)}
-      `}
-            >
-              {["pending", "processing", "completed", "cancelled"].map((status) => (
-                <option key={status} value={status} className="text-white bg-primary">
-                  {status}
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-foreground/70">▼</div>
-          </div>
+        <td className="relative inline-block w-full bg-background">
+          <select
+            value={pendingStatus ?? localStatus}
+            onChange={handleStatusChange}
+            className={`
+      appearance-none
+      w-full
+      text-sm
+      py-2
+      pl-3
+      pr-12                    
+      rounded-md
+      focus:outline-none
+      cursor-pointer
+      border
+      ${getStatusColor(pendingStatus ?? localStatus)}
+    `}
+          >
+            {["pending", "processing", "completed", "cancelled"].map((status) => (
+              <option key={status} value={status} className="bg-white text-black">
+                {status}
+              </option>
+            ))}
+          </select>
+
+          <td className="pointer-events-none absolute right-3 top-1/2  -translate-y-1/2 text-foreground/70 flex items-center">
+            <ArrowBigDown size={24} color="#ffffffff" />
+          </td>
         </td>
+
         <td className="px-4 py-4 whitespace-nowrap text-sm">
           {order.contact_info.first_name} {order.contact_info.last_name}
           <br />
