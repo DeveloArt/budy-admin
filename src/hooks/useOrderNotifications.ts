@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useNotificationState } from "./useNotificationState";
 import { UIOrder } from "@/types/UIOrder";
+import { useRouter } from "next/navigation";
 
 export function useOrderNotifications() {
   const { notificationsEnabled } = useNotificationState();
+  const router = useRouter();
 
   useEffect(() => {
     if (!notificationsEnabled || typeof Notification === "undefined") return;
@@ -36,8 +38,14 @@ export function useOrderNotifications() {
 
           notification.onclick = () => {
             window.focus();
-            window.location.href = "/orders";
+            if (typeof window !== "undefined" && "next" in window) {
+              router.push("/orders");
+            } else {
+              window.location.href = "/orders";
+            }
           };
+
+          if (window.location.pathname === "/orders") window.location.reload();
         }
       )
       .subscribe();
@@ -45,5 +53,5 @@ export function useOrderNotifications() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [notificationsEnabled]);
+  }, [notificationsEnabled, router]);
 }
