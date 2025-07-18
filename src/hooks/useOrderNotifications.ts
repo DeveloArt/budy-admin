@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { useNotificationState } from "./useNotificationState";
 import { UIOrder } from "@/types/UIOrder";
-import { useRouter } from "next/navigation";
 
-export function useOrderNotifications({ enabled, onNewOrder }: { enabled: boolean; onNewOrder?: (order: UIOrder) => void }) {
-  const router = useRouter();
+export function useOrderNotifications() {
+  const { notificationsEnabled } = useNotificationState();
 
   useEffect(() => {
-    if (!enabled || typeof Notification === "undefined") return;
+    if (!notificationsEnabled || typeof Notification === "undefined") return;
 
     const channel = supabase
       .channel("orders-realtime")
@@ -20,24 +20,24 @@ export function useOrderNotifications({ enabled, onNewOrder }: { enabled: boolea
         },
         (payload) => {
           const order = payload.new as UIOrder;
-          if (Notification.permission === "granted") {
-            const name = [order.contact_info?.first_name, order.contact_info?.last_name].filter(Boolean).join(" ").trim();
 
-            const size = order.size?.name;
+          const name = [order.contact_info?.first_name, order.contact_info?.last_name].filter(Boolean).join(" ").trim();
+          const size = order.size?.name;
 
-            const body = name && size ? `Nowe zamówienie od ${name}: ${size}` : "Klient złożył nowe zamówienie.";
+          const body = name && size ? `Nowe zamówienie od ${name}: ${size}` : "Klient złożył nowe zamówienie.";
 
-            const notification = new Notification("Nowe zamówienie!", {
-              body,
-            });
+          const notification = new Notification("Nowe zamówienie!", {
+            body,
+            icon: "/icon-192.png",
+            data: {
+              url: "/orders",
+            },
+          });
 
-            notification.onclick = () => {
-              window.focus();
-              router.push("/orders");
-            };
-          }
-
-          onNewOrder?.(order);
+          notification.onclick = () => {
+            window.focus();
+            window.location.href = "/orders";
+          };
         }
       )
       .subscribe();
@@ -45,5 +45,5 @@ export function useOrderNotifications({ enabled, onNewOrder }: { enabled: boolea
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [enabled, onNewOrder, router]);
+  }, [notificationsEnabled]);
 }

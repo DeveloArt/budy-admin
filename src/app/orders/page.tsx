@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useOrders } from "@/hooks/useOrders";
-import { useOrderNotifications } from "@/hooks/useOrderNotifications";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useNotificationState } from "@/hooks/useNotificationState";
 
 import { AuthGuard } from "@/components/AuthGuard";
 import { TableHeaderRow } from "@/components/orders/TableHeaderRow";
@@ -28,31 +28,13 @@ export default function OrdersPage() {
   const statusButtonRef = useRef<HTMLButtonElement>(null);
   const productButtonRef = useRef<HTMLButtonElement>(null);
   const [permissionStatus, setPermissionStatus] = useState<NotificationPermission | null>(null);
-  const [notificationsEnabled, setNotificationsEnabledRaw] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("notificationsEnabled") === "true";
-    }
-    return false;
-  });
-
-  const setNotificationsEnabled = (value: boolean) => {
-    localStorage.setItem("notificationsEnabled", String(value));
-    setNotificationsEnabledRaw(value);
-  };
+  const { notificationsEnabled, setNotificationsEnabled } = useNotificationState();
 
   useEffect(() => {
     if (notificationsEnabled && Notification.permission !== "granted") {
       Notification.requestPermission();
     }
   }, [notificationsEnabled]);
-
-  useOrderNotifications({
-    enabled: notificationsEnabled,
-    onNewOrder: () => {
-      // either reload the window or re-call your data-fetching logic
-      window.location.reload();
-    },
-  });
 
   useEffect(() => {
     if (typeof Notification !== "undefined") {
