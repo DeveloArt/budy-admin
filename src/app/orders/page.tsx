@@ -3,11 +3,14 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useOrders } from "@/hooks/useOrders";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useNotificationState } from "@/hooks/useNotificationState";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useDeleteOrder } from "@/hooks/useDeleteOrder";
 
 import { AuthGuard } from "@/components/AuthGuard";
 import { TableHeaderRow } from "@/components/orders/TableHeaderRow";
 import { OrderRow } from "@/components/orders/OrderRow";
 import { Input } from "@/components/ui/input";
+import { DeleteConfirmationModal } from "@/components/orders/DeleteConfirmationModal";
 import { Switch } from "@/components/ui/switch";
 
 import { UIOrder } from "@/types/UIOrder";
@@ -27,6 +30,8 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<UIOrder | null>(null);
   const statusButtonRef = useRef<HTMLButtonElement>(null);
   const productButtonRef = useRef<HTMLButtonElement>(null);
+  const [orderToDelete, setOrderToDelete] = useState<UIOrder | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [permissionStatus, setPermissionStatus] = useState<NotificationPermission | null>(null);
   const { notificationsEnabled, setNotificationsEnabled } = useNotificationState();
 
@@ -50,6 +55,19 @@ export default function OrdersPage() {
     size: productFilter ?? undefined,
     search: debouncedSearchTerm || undefined,
   });
+
+  const { deleteOrder } = useDeleteOrder();
+
+  const handleDeleteOrder = async (order: UIOrder) => {
+    const { error } = await deleteOrder(order.id);
+    if (error) {
+      console.error("❌ Error deleting order:", error.message);
+      alert("Wystąpił błąd podczas usuwania zamówienia.");
+      return;
+    }
+    setIsDeleteModalOpen(false);
+    window.location.reload();
+  };
 
   const allStatuses = useMemo(() => Array.from(new Set(orders.map((o) => o.status).filter(Boolean))).sort(), [orders]);
   const allSizes = useMemo(() => Array.from(new Set(orders.map((o) => o.size?.name).filter(Boolean))).sort(), [orders]);
@@ -116,9 +134,23 @@ export default function OrdersPage() {
     });
   }, [orders, sortKey, sortDirection, statusSortDirection, productSortDirection, allStatuses, allSizes]);
 
+  const openDeleteConfirmation = (order: UIOrder) => {
+    setOrderToDelete(order);
+    setIsDeleteModalOpen(true);
+  };
+
   return (
     <AuthGuard>
       <div className="p-6">
+        <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={() => {
+            if (orderToDelete) {
+              handleDeleteOrder(orderToDelete);
+            }
+          }}
+        />
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Zamówienia</h1>
           <div className="flex items-center gap-4">
@@ -202,6 +234,7 @@ export default function OrdersPage() {
                         formatDate={formatDate}
                         formatPrice={formatPrice}
                         onShowDetails={() => setSelectedOrder(isSelected ? null : order)}
+                        onDeleteOrder={() => openDeleteConfirmation(order)}
                       />
                       {isSelected && (
                         <tr className="bg-muted/10">

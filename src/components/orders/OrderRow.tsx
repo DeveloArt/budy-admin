@@ -8,6 +8,7 @@ export const OrderRow = ({
   formatDate,
   formatPrice,
   onShowDetails,
+  onDeleteOrder,
 }: {
   order: UIOrder;
   index: number;
@@ -15,6 +16,7 @@ export const OrderRow = ({
   formatDate: (dateString?: string) => string;
   formatPrice: (price: number) => string;
   onShowDetails: (order: UIOrder) => void;
+  onDeleteOrder: () => void;
 }) => (
   <tr className={index % 2 === 0 ? "bg-card" : "bg-muted/5"}>
     <td className="px-4 py-4 whitespace-nowrap text-sm">
@@ -39,7 +41,9 @@ export const OrderRow = ({
         Szczegóły
       </button>
 
-      <button className="text-red-500 hover:text-red-600 transition-colors border text-base px-2 py-2 ms-1 cursor-pointer">Usuń</button>
+      <button onClick={onDeleteOrder} className="text-red-500 hover:text-red-600 transition-colors border text-base px-2 py-2 ms-1 cursor-pointer">
+        Usuń
+      </button>
     </td>
   </tr>
 );
