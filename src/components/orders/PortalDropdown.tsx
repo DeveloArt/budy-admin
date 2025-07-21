@@ -23,7 +23,6 @@ export function PortalDropdown({ anchorRef, open, children, onClose }: PortalDro
     }
   }, [open, anchorRef]);
 
-  // Optional: close on click outside
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node) && anchorRef.current && !anchorRef.current.contains(e.target as Node)) {
@@ -48,7 +47,7 @@ export function PortalDropdown({ anchorRef, open, children, onClose }: PortalDro
         minWidth: position.width,
         zIndex: 1000,
       }}
-      className="bg-gray-800 border rounded shadow text-sm"
+      className="bg-gray-800 border rounded shadow"
     >
       {children}
     </div>,
