@@ -95,17 +95,17 @@ export default function DashboardPage() {
         <div className="bg-card rounded-lg border border-border p-6">
           <h2 className="text-xl font-bold mb-4">Ostatnie aktywności</h2>
           <div className="space-y-4">
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-4">
               <span className="text-green-500">●</span>
               <p>System został zaktualizowany do najnowszej wersji</p>
               <span className="text-muted-foreground ml-auto">2 min temu</span>
             </div>
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-4">
               <span className="text-blue-500">●</span>
               <p>Nowe zamówienie zostało złożone</p>
               <span className="text-muted-foreground ml-auto">15 min temu</span>
             </div>
-            <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-4">
               <span className="text-yellow-500">●</span>
               <p>Backup systemu został wykonany</p>
               <span className="text-muted-foreground ml-auto">1 godz temu</span>

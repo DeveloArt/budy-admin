@@ -29,9 +29,9 @@ type HeaderButtonProps = {
 };
 
 function HeaderButton({ label, onClick, variant, icon, buttonRef }: HeaderButtonProps) {
-  const baseClasses = "text-sm font-medium uppercase border border-border px-2 py-1 cursor-pointer hover:bg-muted/80";
+  const baseClasses = "font-medium uppercase border border-border px-2 py-1 cursor-pointer hover:bg-muted/80";
 
-  const variantClasses = variant === "sort" ? "text-muted-foreground rounded flex items-center gap-1" : "text-sm rounded-l bg-muted flex items-center gap-1";
+  const variantClasses = variant === "sort" ? "text-muted-foreground rounded flex items-center gap-1" : "rounded-l bg-muted flex items-center gap-1";
 
   return (
     <button ref={buttonRef} type="button" onClick={onClick} className={`${baseClasses} ${variantClasses}`}>
