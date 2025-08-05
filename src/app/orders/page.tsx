@@ -261,6 +261,10 @@ export default function OrdersPage() {
                                 <strong>Adres:</strong> {order.contact_info?.street} {order.contact_info?.house_number}, {order.contact_info?.postal_code} {order.contact_info?.city}
                               </p>
                               <p>
+                                <strong>Zgody:</strong>{" "}
+                                {order.consents?.feedback_contact ? (order.consents?.opinion_publication ? "Zgoda na kontakt oraz publikację opinii" : "Zgoda na kontakt") : "Brak"}
+                              </p>
+                              <p>
                                 <strong>Dostawa:</strong> {order.delivery_option?.name}
                               </p>
                               <p>

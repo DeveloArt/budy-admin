@@ -1,4 +1,4 @@
-import { BarChart2, Package } from "lucide-react";
+import { BarChart2, Package, ChartBar } from "lucide-react";
 
 export const menuItems = [
   {
