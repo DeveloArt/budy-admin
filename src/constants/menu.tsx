@@ -11,9 +11,4 @@ export const menuItems = [
     label: "Zamówienia",
     icon: <Package className="w-5 h-5" />,
   },
-  {
-    href: "/analytics",
-    label: "Analityka",
-    icon: <ChartBar className="w-5 h-5" />,
-  },
 ];
