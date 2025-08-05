@@ -36,4 +36,8 @@ export interface UIOrder {
     first_name: string;
     postal_code: string;
   };
+  consets: {
+    feedback_contact: string;
+    opinion_publication: string;
+  };
 }
